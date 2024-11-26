@@ -77,11 +77,10 @@ public class EventosController {
 	}
 	
 	@PostMapping("/{idEvento}")
-	public String salvarConvidado(@PathVariable Long idEvento, @Valid Convidado convidado, BindingResult result , RedirectAttributes attributes) {
+	public ModelAndView salvarConvidado(@PathVariable Long idEvento, @Valid Convidado convidado, BindingResult result , RedirectAttributes attributes) {
 		
 		if(result.hasErrors()) {
-	
-			return "redirect:/eventos";
+			return detalhar(idEvento, convidado);
 		}
 		
 		System.out.println("Id do evento: " + idEvento);
@@ -90,7 +89,7 @@ public class EventosController {
 		Optional<Evento> opt = er.findById(idEvento);
 		if(opt.isEmpty()) {
 
-			return "redirect:/eventos";
+			return new ModelAndView("redirect:/eventos");
 		}
 		
 		Evento evento = opt.get();
@@ -99,7 +98,7 @@ public class EventosController {
 		cr.save(convidado);
 		attributes.addFlashAttribute("mensagem", "Convidado salvo com sucesso!");
 		
-		return "redirect:/eventos/{idEvento}";
+		return new ModelAndView("redirect:/eventos/{idEvento}");
 		
 	}
 	
